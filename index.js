@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const { User } = require('./models/user');
 
 mongoose.connect('mongodb://127.0.0.1/rblog', { 
         useNewUrlParser: true, 
@@ -10,8 +14,23 @@ mongoose.connect('mongodb://127.0.0.1/rblog', {
     .then(() => console.log('Connected to the database.'))
     .catch((err) => console.error(err));
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
+app.post('/api/users/register', (req, res) => {
+    const user = new User(req.body);
+    user.save((err, userData) => {
+        if(err)
+            return res.json({ success: false, err });
+        else 
+            return res.status(200).json({
+                success: true,
+                
+            });    
+    });
+
+    
+});
+ 
 app.listen(5000);
