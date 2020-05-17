@@ -6,7 +6,9 @@ const cookieParser = require('cookie-parser');
 
 const { User } = require('./models/user');
 
-mongoose.connect('mongodb://127.0.0.1/rblog', { 
+const config = require('./config/key');
+
+mongoose.connect(config.mongoURI, { 
         useNewUrlParser: true, 
         useCreateIndex: true,
         useUnifiedTopology: true
@@ -26,11 +28,13 @@ app.post('/api/users/register', (req, res) => {
         else 
             return res.status(200).json({
                 success: true,
-                
+                data: userData
             });    
-    });
-
-    
+    }); 
 });
+
+const PORT = 5000;
  
-app.listen(5000);
+app.listen(PORT, () => {
+    console.log(`Listening to port: ${PORT}`);
+});
